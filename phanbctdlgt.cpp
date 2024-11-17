@@ -12,7 +12,6 @@ class CayNhiPhan {
 
 private:
     Nut* goc;
-    // Ham tim nut theo gia tri
 	
 public:
     
