@@ -1,8 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -111,20 +107,73 @@ public:
     }
 
     // Sap xep danh sach nha hang theo doanh thu
+    void heapify(vector<nhahang>& arr, int n, int i) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        if (left < n && arr[left].getdoanhthu() > arr[largest].getdoanhthu()) {
+            largest = left;
+        }
+
+        if (right < n && arr[right].getdoanhthu() > arr[largest].getdoanhthu()) {
+            largest = right;
+        }
+
+        if (largest != i) {
+            swap(arr[i], arr[largest]);
+            heapify(arr, n, largest);
+        }
+    }
+
+    void heapsort(vector<nhahang>& arr) {
+        int n = arr.size();
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(arr, n, i);
+        }
+
+        for (int i = n - 1; i > 0; i--) {
+            swap(arr[0], arr[i]);
+            heapify(arr, i, 0);
+        }
+    }
     void sapxepphaidoanhthu() {
-        sort(danhsach.begin(), danhsach.end());
+        heapsort(danhsach);
         cout << "Da sap xep danh sach nha hang theo doanh thu." << endl;
-        hienthidanhsach(); 
+        hienthidanhsach();
     }
 
     // Sap xep danh sach nha hang theo phan loai
+    void quicksort(vector<nhahang>& arr, int low, int high, function<bool(const nhahang&, const nhahang&)> cmp) {
+    if (low < high) {
+        	int pivot = partition(arr, low, high, cmp);
+       	 	quicksort(arr, low, pivot - 1, cmp);
+        	quicksort(arr, pivot + 1, high, cmp);
+    	}
+	}
+
+	int partition(vector<nhahang>& arr, int low, int high, function<bool(const nhahang&, const nhahang&)> cmp) {
+    nhahang pivot = arr[high]; 
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (cmp(arr[j], pivot)) {
+            	i++;
+            	swap(arr[i], arr[j]);
+        	}
+    	}
+		swap(arr[i], arr[high]);
+    	return i;
+	}
+
     void sapxepphaiphanloai() {
-        sort(danhsach.begin(), danhsach.end(), [](const nhahang& a, const nhahang& b) {
-            return a.phanloai() < b.phanloai();
-        });
-        cout << "Da sap xep danh sach nha hang theo phan loai." << endl;
-        hienthidanhsach(); 
-    }
+    	auto cmp = [](const nhahang& a, const nhahang& b) {
+        	return a.phanloai() < b.phanloai();
+   		 };
+    	quicksort(danhsach, 0, danhsach.size() - 1, cmp); 
+    	cout << "Da sap xep danh sach nha hang theo phan loai." << endl;
+    	hienthidanhsach();
+	}
 	// Ghi danh sach nha hang vao file
     void ghinhahang() {
         ofstream file("nhahang2.txt");
@@ -237,4 +286,3 @@ int main() {
     myApp.menu();
     return 0;
 }
-
